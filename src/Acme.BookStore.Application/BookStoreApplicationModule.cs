@@ -1,12 +1,15 @@
 ﻿
+using Acme.BookStore.BackgroundWorker2;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using System;
+using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundJobs.Quartz;
+using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
@@ -27,7 +30,8 @@ namespace Acme.BookStore;
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
     typeof(AbpBackgroundJobsModule),
-    typeof(AbpBackgroundJobsQuartzModule)) ]
+    typeof(AbpBackgroundJobsQuartzModule),
+    typeof(AbpBackgroundWorkersModule)) ]
 public class BookStoreApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -68,5 +72,11 @@ public class BookStoreApplicationModule : AbpModule
             options.RetryIntervalMillisecond = 1000;
         });
 
+    }
+
+    public override void OnApplicationInitialization(
+       ApplicationInitializationContext context)
+    {
+        context.AddBackgroundWorkerAsync<InvalidAutorCheckWorker>();
     }
 }
