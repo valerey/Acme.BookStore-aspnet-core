@@ -1,15 +1,11 @@
 ﻿using Acme.BookStore.Authors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Threading;
 
-namespace Acme.BookStore.BackgroundWorker2
+namespace Acme.BookStore.BackgroundWorker
 {
     public class InvalidAutorCheckWorker : AsyncPeriodicBackgroundWorkerBase
     {
@@ -20,13 +16,12 @@ namespace Acme.BookStore.BackgroundWorker2
                 timer,
                 serviceScopeFactory)
         {
-            Timer.Period = 6000; 
+            Timer.Period = 6000;
         }
 
-        protected async override Task DoWorkAsync(
-            PeriodicBackgroundWorkerContext workerContext)
+        protected async override Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
         {
-            Logger.LogInformation("Starting: InvalidAutorCheckWorker...");
+            Logger.LogInformation("Starting: InvalidAutorCheckWorker..!");
 
             //Resolve dependencies
             var authorRepository = workerContext
@@ -35,8 +30,8 @@ namespace Acme.BookStore.BackgroundWorker2
 
             //Do the work
             var author = await authorRepository.FindByNameAsync("aaa");
-
-            Logger.LogInformation("Completed: InvalidAutorCheckWorker ...");
+           
+            Logger.LogInformation("Completed: InvalidAutorCheckWorker..!");
         }
     }
 }

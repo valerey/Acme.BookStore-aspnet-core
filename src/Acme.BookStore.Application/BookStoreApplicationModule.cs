@@ -1,20 +1,16 @@
 ﻿
-using Acme.BookStore.BackgroundWorker2;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Quartz;
-using System;
+using Acme.BookStore.BackgroundWorker;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundJobs.Quartz;
 using Volo.Abp.BackgroundWorkers;
+using Volo.Abp.BackgroundWorkers.Quartz;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
-using Volo.Abp.Quartz;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 
@@ -31,7 +27,9 @@ namespace Acme.BookStore;
     typeof(AbpSettingManagementApplicationModule),
     typeof(AbpBackgroundJobsModule),
     typeof(AbpBackgroundJobsQuartzModule),
-    typeof(AbpBackgroundWorkersModule)) ]
+    typeof(AbpBackgroundWorkersModule),
+    typeof(AbpBackgroundWorkersQuartzModule)
+    )]
 public class BookStoreApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -44,6 +42,11 @@ public class BookStoreApplicationModule : AbpModule
         Configure<AbpBackgroundJobOptions>(options =>
         {
             options.IsJobExecutionEnabled = true; 
+        });
+
+        Configure<AbpBackgroundWorkerQuartzOptions>(options =>
+        {
+            options.IsAutoRegisterEnabled = true;
         });
 
         //var configuration = context.Services.GetConfiguration();

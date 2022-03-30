@@ -8,37 +8,35 @@ using Acme.BookStore.BackgroudJobs;
 
 namespace Acme.BookStore.BackgroundJobs
 {
-    public class RegistrationService : ApplicationService
+    public class BackgroundJobAppService : ApplicationService
     {
         private readonly IBackgroundJobManager _backgroundJobManager;
 
-        public RegistrationService(IBackgroundJobManager backgroundJobManager)
+        public BackgroundJobAppService(IBackgroundJobManager backgroundJobManager)
         {
             _backgroundJobManager = backgroundJobManager;
         }  
 
         public async Task SendMailAsync(string emailAddress)
         {
-
             await _backgroundJobManager.EnqueueAsync(
                 new EmailSendingArgs
                 {
                     EmailAddress = emailAddress,
-                    Subject = "You've successfully registered!",
-                    Body = "..."
+                    Subject = "Subject",
+                    Body = "Body"
                 }
             );
         }
 
         public async Task SendMail2Async(string emailAddress)
         {
-
             await _backgroundJobManager.EnqueueAsync(
                 new EmailSendingArgs2
                 {
                     EmailAddress = emailAddress,
-                    Subject = "You've successfully registered!",
-                    Body = "..."
+                    Subject = "Subject",
+                    Body = "Body"
                 }
             );
         }
