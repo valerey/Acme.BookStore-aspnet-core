@@ -13,6 +13,11 @@ using Volo.Abp.PermissionManagement.Identity;
 using Volo.Abp.PermissionManagement.IdentityServer;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
+using Volo.Abp;
+using Volo.Abp.BackgroundWorkers;
+using Acme.BookStore.BackgroundWorker;
+using Volo.Abp.BackgroundWorkers.Quartz;
+using Volo.Abp.BackgroundJobs.Quartz;
 
 namespace Acme.BookStore;
 
@@ -27,7 +32,11 @@ namespace Acme.BookStore;
     typeof(AbpPermissionManagementDomainIdentityServerModule),
     typeof(AbpSettingManagementDomainModule),
     typeof(AbpTenantManagementDomainModule),
-    typeof(AbpEmailingModule)
+    typeof(AbpEmailingModule),
+    typeof(AbpBackgroundJobsModule),
+    typeof(AbpBackgroundJobsQuartzModule),
+    typeof(AbpBackgroundWorkersModule),
+    typeof(AbpBackgroundWorkersQuartzModule)
 )]
 public class BookStoreDomainModule : AbpModule
 {
@@ -38,8 +47,52 @@ public class BookStoreDomainModule : AbpModule
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
         });
 
+
+
+        Configure<AbpBackgroundJobOptions>(options =>
+        {
+            options.IsJobExecutionEnabled = true;
+        });
+
+        Configure<AbpBackgroundWorkerQuartzOptions>(options =>
+        {
+            options.IsAutoRegisterEnabled = true;
+        });
+
+        //var configuration = context.Services.GetConfiguration();
+
+        //PreConfigure<AbpQuartzOptions>(options =>
+        //{
+        //    options.Configurator = configure =>
+        //    {
+        //        configure.UsePersistentStore(storeOptions =>
+        //        {
+        //            storeOptions.UseProperties = true;
+        //            //storeOptions.UseJsonSerializer();
+        //            storeOptions.UseSqlServer(configuration.GetConnectionString("Server=localhost;Database=BookStore;Trusted_Connection=True"));
+        //            storeOptions.UseClustering(c =>
+        //            {
+        //                c.CheckinMisfireThreshold = TimeSpan.FromSeconds(20);
+        //                c.CheckinInterval = TimeSpan.FromSeconds(10);
+        //            });
+        //        });
+        //    };
+        //});
+
+        Configure<AbpBackgroundJobQuartzOptions>(options =>
+        {
+            options.RetryCount = 1;
+            options.RetryIntervalMillisecond = 1000;
+        });
+
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
+    }
+
+    public override void OnApplicationInitialization(
+      ApplicationInitializationContext context)
+    {
+        context.AddBackgroundWorkerAsync<InvalidAutorCheckWorker>();
     }
 }

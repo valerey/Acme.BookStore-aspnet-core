@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using Volo.Abp.Application.Services;
-using Volo.Abp.BackgroundJobs;
-
-namespace Acme.BookStore.BackgroundJobs
+﻿namespace Acme.BookStore.BackgroundJobs
 {
     public class EmailSendingArgs
     {

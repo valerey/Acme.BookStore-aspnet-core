@@ -24,11 +24,7 @@ namespace Acme.BookStore;
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
-    typeof(AbpSettingManagementApplicationModule),
-    typeof(AbpBackgroundJobsModule),
-    typeof(AbpBackgroundJobsQuartzModule),
-    typeof(AbpBackgroundWorkersModule),
-    typeof(AbpBackgroundWorkersQuartzModule)
+    typeof(AbpSettingManagementApplicationModule)
     )]
 public class BookStoreApplicationModule : AbpModule
 {
@@ -38,48 +34,6 @@ public class BookStoreApplicationModule : AbpModule
         {
             options.AddMaps<BookStoreApplicationModule>();
         });
-
-        Configure<AbpBackgroundJobOptions>(options =>
-        {
-            options.IsJobExecutionEnabled = true; 
-        });
-
-        Configure<AbpBackgroundWorkerQuartzOptions>(options =>
-        {
-            options.IsAutoRegisterEnabled = true;
-        });
-
-        //var configuration = context.Services.GetConfiguration();
-
-        //PreConfigure<AbpQuartzOptions>(options =>
-        //{
-        //    options.Configurator = configure =>
-        //    {
-        //        configure.UsePersistentStore(storeOptions =>
-        //        {
-        //            storeOptions.UseProperties = true;
-        //            //storeOptions.UseJsonSerializer();
-        //            storeOptions.UseSqlServer(configuration.GetConnectionString("Server=localhost;Database=BookStore;Trusted_Connection=True"));
-        //            storeOptions.UseClustering(c =>
-        //            {
-        //                c.CheckinMisfireThreshold = TimeSpan.FromSeconds(20);
-        //                c.CheckinInterval = TimeSpan.FromSeconds(10);
-        //            });
-        //        });
-        //    };
-        //});
-
-        Configure<AbpBackgroundJobQuartzOptions>(options =>
-        {
-            options.RetryCount = 1;
-            options.RetryIntervalMillisecond = 1000;
-        });
-
     }
 
-    public override void OnApplicationInitialization(
-       ApplicationInitializationContext context)
-    {
-        context.AddBackgroundWorkerAsync<InvalidAutorCheckWorker>();
-    }
 }
